@@ -67,6 +67,12 @@ class SSEConnectionHelper {
             $privateStream->write($data);
         });
 
+        // say hello
+        $broadcastStream->write(array(
+            'event' => 'new_player',
+            'data' => ','
+        ));
+
         // send connection data to browser
         return new \React\Http\Response(
             200,
