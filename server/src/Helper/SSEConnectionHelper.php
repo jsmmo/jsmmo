@@ -24,6 +24,27 @@ class SSEConnectionHelper {
         }
     }
 
+
+    public function isSSEDataRequest($request)
+    {
+        if (strpos($request->getUri()->getPath(),'/data') === 0) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     */
+    public function handleIncommingData($request)
+    {
+        $event = str_replace('/data/','',$request->getUri()->getPath());
+        $data = $request->getBody()->getContents();
+
+        echo "incomming data: $event > $data " . PHP_EOL;
+
+        return $this->returnDataReadResponse();
+    }
+
     /**
      * @return \React\Http\Response
      */
@@ -53,6 +74,17 @@ class SSEConnectionHelper {
                 'Content-Type' => 'text/event-stream'
             ),
             $privateStream
+        );
+    }
+
+    public function returnDataReadResponse() {
+        // send OK to browser
+        return new \React\Http\Response(
+            200,
+            array(
+                'Content-Type' => 'text/plain'
+            ),
+            ''
         );
     }
 

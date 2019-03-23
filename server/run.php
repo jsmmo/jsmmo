@@ -25,6 +25,10 @@ $server = new \React\Http\Server(function (\Psr\Http\Message\ServerRequestInterf
         return $staticFileDeliveryHelper->deliverStaticFile($request);
     }
 
+    // receive data from client
+    if ($sseConnectionHelper->isSSEDataRequest($request)) {
+        return $sseConnectionHelper->handleIncommingData($request);
+    }
 
     // filter non sse connections
     if (!$sseConnectionHelper->isSSEConnectionRequest($request)) {
