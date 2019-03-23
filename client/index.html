@@ -61,10 +61,11 @@
         function create ()
         {
             window.scene = this;
+
+            window.scene.add.image(400, 300, 'sky');
         }
 
         function addPlayer() {
-            window.scene.add.image(400, 300, 'sky');
 
             var particles = window.scene.add.particles('red');
 
