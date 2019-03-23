@@ -36,7 +36,7 @@ $server = new \React\Http\Server(function (\Psr\Http\Message\ServerRequestInterf
     }
 
     // das hier ist unsere game event connection
-    return $sseConnectionHelper->handleIncommingConnection($request, $loop, $broadcastStream);
+    return $sseConnectionHelper->handleIncommingConnection($request, $broadcastStream);
 });
 
 

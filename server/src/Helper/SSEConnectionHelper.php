@@ -17,10 +17,10 @@ class SSEConnectionHelper {
     /**
      * @param \Psr\Http\Message\ServerRequestInterface $request
      */
-    public function handleIncommingConnection($request, $loop, $broadcastStream) {
+    public function handleIncommingConnection($request, $broadcastStream) {
         if ($this->isSSEConnectionRequest($request)) {
             echo "incomming sse: ".$request->getHeaderLine('Last-Event-ID').PHP_EOL;
-            return $this->getStreamingResponse($loop, $broadcastStream);
+            return $this->getStreamingResponse($broadcastStream);
         }
     }
 
@@ -45,12 +45,8 @@ class SSEConnectionHelper {
         return $this->returnDataReadResponse();
     }
 
-    /**
-     * @return \React\Http\Response
-     */
-    public function getStreamingResponse($loop, $broadcastStream) {
-        // create a stream and format it as sse data
-        $privateStream = new \React\Stream\ThroughStream(function ($data) {
+    public function generateSSEFormatedStream() {
+        return new \React\Stream\ThroughStream(function ($data) {
             if (is_string($data)) {
                 return 'data: ' . $data . "\n\n";
             } else if (is_array($data)) {
@@ -61,11 +57,16 @@ class SSEConnectionHelper {
                 return $str. "\n\n";
             }
         });
+    }
 
-        // connect broadcast to private stream and merge data
-        $broadcastStream->on('data', function($data) use ($loop, $privateStream){
-            $privateStream->write($data);
-        });
+    /**
+     * @return \React\Http\Response
+     */
+    public function getStreamingResponse($broadcastStream) {
+        // create a stream and format it as sse data
+        $privateStream = $this->generateSseFormatedStream();
+
+        $broadcastStream->pipe($privateStream);
 
         // say hello
         $broadcastStream->write(array(
