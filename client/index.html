@@ -5,12 +5,24 @@
     <title>jsmmo</title>
     <script>
         var server = new EventSource("demo");
+
         server.addEventListener("message", function (event) {
             console.log(event);
         });
-        server.addEventListener("ticker", function (event) {
+        server.addEventListener("HELLO", function (event) {
             console.log(event);
+            sendData('HELLO',1);
         });
+
+
+        function sendData(event, data) {
+            fetch('/data/'+event,
+                {
+                    method: 'PUT',
+                    body: data
+                }
+            ).catch(function(err){console.log(err)});
+        }
     </script>
 </head>
 <body>
