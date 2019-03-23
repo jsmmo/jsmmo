@@ -77,7 +77,8 @@ class SSEConnectionHelper {
         return new \React\Http\Response(
             200,
             array(
-                'Content-Type' => 'text/event-stream'
+                'Content-Type' => 'text/event-stream',
+                'Cache-Control' => 'no-cache'
             ),
             $privateStream
         );
