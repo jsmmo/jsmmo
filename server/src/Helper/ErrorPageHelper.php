@@ -7,11 +7,9 @@ namespace APPNAME\Helper;
 class ErrorPageHelper
 {
     /**
-     * @param $request
-     *
      * @return \React\Http\Response
      */
-    public function return404Page($request)
+    public function return404Page()
     {
         return new \React\Http\Response(
             404,
