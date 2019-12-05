@@ -6,9 +6,11 @@
     <title>jsmmo</title>
 
     <script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.min.js"></script>
-
     <script>
-        let server = new EventSource("demo");
+        //here we add an event source and send data to our server
+
+        // this is our event source it needs the address of our server
+        const server = new EventSource("demo");
 
         server.addEventListener("message", function (event) {
             console.log(event);
@@ -48,7 +50,7 @@
             }
         };
 
-        var game = new Phaser.Game(config);
+        const game = new Phaser.Game(config);
 
         function preload ()
         {
@@ -66,13 +68,13 @@
         }
 
         function addPlayer() {
-            var particles = window.scene.add.particles('red');
-            var emitter = particles.createEmitter({
+            let particles = window.scene.add.particles('red');
+            let emitter = particles.createEmitter({
                 speed: 100,
                 scale: { start: 1, end: 0 },
                 blendMode: 'ADD'
             });
-            var logo = window.scene.physics.add.image(400, 100, 'logo');
+            let logo = window.scene.physics.add.image(400, 100, 'logo');
 
             logo.setVelocity(100, 200);
             logo.setBounce(1, 1);
