@@ -23,7 +23,7 @@ class SSEConnectionHelper
 
     /**
      * @param \React\HttpClient\Request $request
-     * @param $broadcastStream
+     * @param \React\Stream\ThroughStream $broadcastStream
      *
      * @return \React\Http\Response
      */
@@ -96,7 +96,7 @@ class SSEConnectionHelper
     }
 
     /**
-     * @param $broadcastStream
+     * @param \React\Stream\ThroughStream $broadcastStream
      * @return \React\Http\Response
      */
     public function getStreamingResponse($broadcastStream)
