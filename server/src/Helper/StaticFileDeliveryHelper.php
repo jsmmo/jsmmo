@@ -1,4 +1,5 @@
 <?php
+
 namespace APPNAME\Helper;
 
 /**
@@ -6,6 +7,8 @@ namespace APPNAME\Helper;
  */
 class StaticFileDeliveryHelper
 {
+    const CLIENT_DIR = __DIR__ . '/../../../client/';
+
     /**
      * Static file mappings
      * @var array
@@ -15,13 +18,13 @@ class StaticFileDeliveryHelper
     );
 
     /**
-     * @param $request
+     * @param \React\HttpClient\Request $request
      *
      * @return bool
      */
     public function isStaticFile($request)
     {
-        $file = $this->getCleanPath(__DIR__ . '/../../../client/' . $this->mapPath($request->getUri()->getPath()));
+        $file = $this->getCleanPath(self::CLIENT_DIR . $this->mapPath($request->getUri()->getPath()));
 
         echo $file;
 
@@ -34,13 +37,13 @@ class StaticFileDeliveryHelper
     }
 
     /**
-     * @param $request
+     * @param \React\HttpClient\Request $request
      *
      * @return \React\Http\Response
      */
     public function deliverStaticFile($request)
     {
-        $file = $this->getCleanPath(__DIR__ . '/../../../client/' . $this->mapPath($request->getUri()->getPath()));
+        $file = $this->getCleanPath(self::CLIENT_DIR . $this->mapPath($request->getUri()->getPath()));
 
         return new \React\Http\Response(
             200,
@@ -54,7 +57,7 @@ class StaticFileDeliveryHelper
     /**
      * cleans up the path
      *
-     * @param $path
+     * @param string $path
      * @return bool|string
      */
     private function getCleanPath($path)
@@ -65,7 +68,7 @@ class StaticFileDeliveryHelper
     /**
      * maps the file to a static file path
      *
-     * @param $file
+     * @param string $file
      * @return mixed
      */
     private function mapPath($file)

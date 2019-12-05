@@ -32,7 +32,7 @@ $server = new \React\Http\Server(function (\Psr\Http\Message\ServerRequestInterf
     }
 
     // das hier ist unsere game event connection
-    return $sseConnectionHelper->handleIncommingConnection($request, $broadcastStream);
+    return $sseConnectionHelper->handleIncomingConnection($request, $broadcastStream);
 });
 
 $loop->addPeriodicTimer(2.0, function () use ($broadcastStream) {

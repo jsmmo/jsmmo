@@ -1,4 +1,5 @@
 <?php
+
 namespace APPNAME\Helper;
 
 /**
@@ -7,7 +8,7 @@ namespace APPNAME\Helper;
 class SSEConnectionHelper
 {
     /**
-     * @param $request
+     * @param \React\HttpClient\Request $request
      *
      * @return bool
      */
@@ -21,12 +22,12 @@ class SSEConnectionHelper
     }
 
     /**
-     * @param $request
+     * @param \React\HttpClient\Request $request
      * @param $broadcastStream
      *
      * @return \React\Http\Response
      */
-    public function handleIncommingConnection($request, $broadcastStream)
+    public function handleIncomingConnection($request, $broadcastStream)
     {
         if ($this->isSSEConnectionRequest($request)) {
             echo "incomming sse: " . $request->getHeaderLine('Last-Event-ID') . PHP_EOL;
@@ -44,7 +45,7 @@ class SSEConnectionHelper
     }
 
     /**
-     * @param $request
+     * @param \React\HttpClient\Request $request
      *
      * @return bool
      */
@@ -58,7 +59,7 @@ class SSEConnectionHelper
     }
 
     /**
-     * @param $request
+     * @param \React\HttpClient\Request $request
      *
      * @return \React\Http\Response
      */
@@ -87,8 +88,10 @@ class SSEConnectionHelper
                     $str .= "$key: $value\n";
                 }
 
-                return $str. "\n\n";
+                return $str . "\n\n";
             }
+
+            return null;
         });
     }
 
