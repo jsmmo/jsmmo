@@ -4,5 +4,5 @@ Install and run:
 ```
 composer install
 
-php run.php PORT
+php run.php [PORT]
 ```
