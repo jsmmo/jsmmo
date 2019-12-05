@@ -4,19 +4,15 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-
 $loop = React\EventLoop\Factory::create();
 
 $staticFileDeliveryHelper = new \APPNAME\Helper\StaticFileDeliveryHelper();
 $errorPageHelper = new \APPNAME\Helper\ErrorPageHelper();
 $sseConnectionHelper = new \APPNAME\Helper\SSEConnectionHelper();
 
-
-
 $broadcastStream = new \React\Stream\ThroughStream(function ($data) {
     return $data;
 });
-
 
 $server = new \React\Http\Server(function (\Psr\Http\Message\ServerRequestInterface $request) use ($broadcastStream, $loop,$staticFileDeliveryHelper, $errorPageHelper, $sseConnectionHelper) {
     // normal http requests
@@ -39,7 +35,6 @@ $server = new \React\Http\Server(function (\Psr\Http\Message\ServerRequestInterf
     return $sseConnectionHelper->handleIncommingConnection($request, $broadcastStream);
 });
 
-
 $loop->addPeriodicTimer(2.0, function () use ($broadcastStream) {
     $broadcastStream->write(array(
         'event' => 'HELLO',
@@ -49,9 +44,11 @@ $loop->addPeriodicTimer(2.0, function () use ($broadcastStream) {
 
 $port = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : 0;
 $socket = new React\Socket\Server($port, $loop);
+
 $server->listen($socket);
 $server->on('error', function (Throwable $e) {
     echo 'Error: ' . $e->getMessage() . PHP_EOL;
 });
+
 $loop->run();
 

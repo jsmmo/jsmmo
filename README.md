@@ -1,4 +1,8 @@
 # Draft jsmmo
 
-Wir machen ein cooles mmo im Browser
+We make a cool browser based mmo!
+
+### Contribution Guidelines
+
+do whatever you want!
 

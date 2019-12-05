@@ -1,12 +1,11 @@
 <?php
 namespace APPNAME\Helper;
 
-
 /**
  * Class StaticFileDeliveryHelper
  */
-class StaticFileDeliveryHelper {
-
+class StaticFileDeliveryHelper
+{
     /**
      * Static file mappings
      * @var array
@@ -15,21 +14,33 @@ class StaticFileDeliveryHelper {
         '/' => 'index.html'
     );
 
-    public function isStaticFile($request) {
-        $file = $this->getCleanPath(__DIR__.'/../../../client/'.$this->mapPath($request->getUri()->getPath()));
+    /**
+     * @param $request
+     *
+     * @return bool
+     */
+    public function isStaticFile($request)
+    {
+        $file = $this->getCleanPath(__DIR__ . '/../../../client/' . $this->mapPath($request->getUri()->getPath()));
+
         echo $file;
-        if (file_exists($file)) {
+
+        if (file_exists($file))
+        {
             return true;
         }
+
         return false;
     }
 
     /**
      * @param $request
-     * @param $file
+     *
+     * @return \React\Http\Response
      */
-    public function deliverStaticFile($request) {
-        $file = $this->getCleanPath(__DIR__.'/../../../client/'.$this->mapPath($request->getUri()->getPath()));
+    public function deliverStaticFile($request)
+    {
+        $file = $this->getCleanPath(__DIR__ . '/../../../client/' . $this->mapPath($request->getUri()->getPath()));
 
         return new \React\Http\Response(
             200,
@@ -40,14 +51,14 @@ class StaticFileDeliveryHelper {
         );
     }
 
-
     /**
      * cleans up the path
      *
      * @param $path
      * @return bool|string
      */
-    private function getCleanPath($path) {
+    private function getCleanPath($path)
+    {
         return realpath($path);
     }
 
@@ -57,10 +68,12 @@ class StaticFileDeliveryHelper {
      * @param $file
      * @return mixed
      */
-    private function mapPath($file) {
+    private function mapPath($file)
+    {
         if (isset(static::$staticMapping[$file])) {
             return static::$staticMapping[$file];
         }
+
         return $file;
     }
 }

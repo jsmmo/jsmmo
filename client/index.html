@@ -2,11 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8" />
+
     <title>jsmmo</title>
+
     <script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.min.js"></script>
 
     <script>
-        var server = new EventSource("demo");
+        let server = new EventSource("demo");
 
         server.addEventListener("message", function (event) {
             console.log(event);
@@ -19,9 +21,8 @@
             addPlayer();
         });
 
-
         function sendData(event, data) {
-            fetch('/data/'+event,
+            fetch('/data/' + event,
                 {
                     method: 'PUT',
                     body: data
@@ -30,9 +31,8 @@
         }
     </script>
 
-
     <script>
-        var config = {
+        const config = {
             type: Phaser.AUTO,
             width: 800,
             height: 600,
@@ -49,10 +49,10 @@
         };
 
         var game = new Phaser.Game(config);
+
         function preload ()
         {
             this.load.setBaseURL('http://labs.phaser.io');
-
             this.load.image('sky', 'assets/skies/space3.png');
             this.load.image('logo', 'assets/sprites/phaser3-logo.png');
             this.load.image('red', 'assets/particles/red.png');
@@ -66,15 +66,12 @@
         }
 
         function addPlayer() {
-
             var particles = window.scene.add.particles('red');
-
             var emitter = particles.createEmitter({
                 speed: 100,
                 scale: { start: 1, end: 0 },
                 blendMode: 'ADD'
             });
-
             var logo = window.scene.physics.add.image(400, 100, 'logo');
 
             logo.setVelocity(100, 200);
