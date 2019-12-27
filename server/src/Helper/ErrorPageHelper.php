@@ -1,13 +1,17 @@
 <?php
-namespace APPNAME\Helper;
 
+namespace APPNAME\Helper;
 
 /**
  * Class ErrorPageHelper
  */
-class ErrorPageHelper {
-
-    public function return404Page($request) {
+class ErrorPageHelper
+{
+    /**
+     * @return \React\Http\Response
+     */
+    public function return404Page()
+    {
         return new \React\Http\Response(
             404,
             array(
@@ -16,5 +20,4 @@ class ErrorPageHelper {
             '<h1>404</h1><p>Resource not found</p>'
         );
     }
-
 }
