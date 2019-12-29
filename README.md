@@ -9,6 +9,10 @@ do whatever you want!
 ### Server
 
 #### 1. Install Server
+You need composer and php installed on your system.
+
+https://getcomposer.org/download/
+
 navigate to the server root directory inside the project
 
 ```
