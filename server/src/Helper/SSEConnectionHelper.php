@@ -73,6 +73,12 @@ class SSEConnectionHelper
     public function handleIncommingData($request)
     {
         $event = str_replace('/data/','',$request->getUri()->getPath());
+        $tokens = explode('/',$event);
+        if (count($tokens) == 2) {
+            $event = $tokens[1];
+            $targetId = $tokens[0];
+        }
+
         $data = $request->getBody()->getContents();
 
         echo "incomming data: $event > $data " . PHP_EOL;
@@ -84,6 +90,16 @@ class SSEConnectionHelper
             if ($connection) {
                 $connection->setLastKeepAlive(time());
             }
+        }
+
+
+
+        if (strlen($targetId)) {
+            $connection = $this->getConnection($targetId);
+            $connection->getStream()->write(array(
+                'event' => $event,
+                'data' => $data
+            ));
         }
 
         return $this->returnDataReadResponse();
