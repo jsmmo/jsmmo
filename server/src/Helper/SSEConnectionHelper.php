@@ -7,6 +7,12 @@ namespace APPNAME\Helper;
  */
 class SSEConnectionHelper
 {
+
+    /**
+     * @var array[]
+     */
+    protected $connections = [];
+
     /**
      * @param \React\HttpClient\Request $request
      *
@@ -32,8 +38,9 @@ class SSEConnectionHelper
         if ($this->isSSEConnectionRequest($request)) {
             echo "incomming sse: " . $request->getHeaderLine('Last-Event-ID') . PHP_EOL;
 
-            return $this->getStreamingResponse($broadcastStream);
+            return $this->getStreamingResponse($broadcastStream,$request);
         }
+
 
         return new \React\Http\Response(
             500,
@@ -70,6 +77,15 @@ class SSEConnectionHelper
 
         echo "incomming data: $event > $data " . PHP_EOL;
 
+        // todo implement some event listener here...
+        if ($event == 'keep-alive') {
+            $data = \json_decode($data,true);
+            $connection = $this->getConnection($data['uniqid']);
+            if ($connection) {
+                $connection->setLastKeepAlive(time());
+            }
+        }
+
         return $this->returnDataReadResponse();
     }
 
@@ -97,18 +113,30 @@ class SSEConnectionHelper
 
     /**
      * @param \React\Stream\ThroughStream $broadcastStream
+     * @param \RingCentral\Psr7\Request $request
      * @return \React\Http\Response
      */
-    public function getStreamingResponse($broadcastStream)
+    public function getStreamingResponse($broadcastStream,$request)
     {
         // create a stream and format it as sse data
         $privateStream = $this->generateSseFormatedStream();
 
+        $cookies = [];
+        $cookieHeaders = $request->getHeader('Cookie');
+        foreach ($cookieHeaders as $cookieHeader) {
+            $cookies = array_merge($cookies,$this->parseCookies($cookieHeader));
+        }
+
+        $this->connections[$cookies['uniqid']] = new \APPNAME\Connection($privateStream);
+
         $broadcastStream->pipe($privateStream);
+
         // say hello
         $broadcastStream->write(array(
-            'event' => 'new_player',
-            'data' => ','
+            'event' => 'new_connecetion',
+            'data' => json_encode(array(
+                'id' => $cookies['uniqid'],
+            ))
         ));
 
         // send connection data to browser
@@ -116,7 +144,7 @@ class SSEConnectionHelper
             200,
             array(
                 'Content-Type' => 'text/event-stream',
-                'Cache-Control' => 'no-cache'
+                'Cache-Control' => 'no-cache',
             ),
             $privateStream
         );
@@ -136,4 +164,30 @@ class SSEConnectionHelper
             ''
         );
     }
+
+
+    private function parseCookies($cookieString) {
+        parse_str(strtr($cookieString, array('&' => '%26', '+' => '%2B', ';' => '&')), $cookies);
+
+        return $cookies;
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getConnections()
+    {
+        return $this->connections;
+    }
+
+    public function getConnection($id) {
+        if (isset($this->connections[$id])) {
+            return $this->connections[$id];
+        }
+        return false;
+    }
+    public function removeConnection($id) {
+        unset($this->connections[$id]);
+    }
+
 }

@@ -34,12 +34,29 @@ $server = new \React\Http\Server(function (\Psr\Http\Message\ServerRequestInterf
     return $sseConnectionHelper->handleIncomingConnection($request, $broadcastStream);
 });
 
-$loop->addPeriodicTimer(2.0, function () use ($broadcastStream) {
-    $broadcastStream->write(array(
-        'event' => 'HELLO',
-        'data' => '1',
-    ));
+$loop->addPeriodicTimer(2.0, function () use ($sseConnectionHelper) {
+    $connections = $sseConnectionHelper->getConnections();
+    foreach($connections as $connection) {
+        $connection->getStream()->write(array(
+            'event' => 'HELLO',
+            'data' => '1',
+        ));
+    }
 });
+
+
+$loop->addPeriodicTimer(10.0, function () use ($sseConnectionHelper) {
+    $connections = $sseConnectionHelper->getConnections();
+    foreach($connections as $key => $connection) {
+        if ($connection->getLastKeepAlive() < time() - 15) {
+            $sseConnectionHelper->removeConnection($key);
+            echo "Remove client connection: ".$key;
+        }
+    }
+});
+
+
+
 
 $port = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : 0;
 $socket = new React\Socket\Server($port, $loop);

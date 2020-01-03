@@ -37,7 +37,7 @@ class StaticFileDeliveryHelper
     }
 
     /**
-     * @param \React\HttpClient\Request $request
+     * @param \RingCentral\Psr7\Request
      *
      * @return \React\Http\Response
      */
@@ -48,7 +48,8 @@ class StaticFileDeliveryHelper
         return new \React\Http\Response(
             200,
             array(
-                'Content-Type' => 'text/html'
+                'Content-Type' => 'text/html',
+                'Set-Cookie' => 'uniqid='.uniqid(),
             ),
             file_get_contents($file)
         );
