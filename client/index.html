@@ -5,29 +5,42 @@
 
     <title>jsmmo</title>
 
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <script>
-        //here we add an event source and send data to our server
+        function getCookieValue(a) {
+            const b = document.cookie.match('(^|;)\\s*' + a + '\\s*=\\s*([^;]+)');
+            return b ? b.pop() : '';
+        }
 
         // this is our event source it needs the address of our server
         const server = new EventSource("demo");
 
-        server.addEventListener("message", function (event) {
-            console.log(event);
-        });
-        server.addEventListener("HELLO", function (event) {
-            console.log(event);
-            sendData('HELLO',1);
-        });
-        server.addEventListener("new_player", function (event) {
-            addPlayer();
+        window.setInterval(function(){
+            broadcastData('keep-alive',{uniqid:getCookieValue('uniqid')})
+        },5000)
+
+        server.addEventListener("new_connecetion", function (event) {
+            $('#players').append('<li>Player</li>');
         });
 
-        function sendData(event, data) {
+        function broadcastData(event, data) {
             fetch('/data/' + event,
                 {
                     method: 'PUT',
-                    body: data
+                    body: JSON.stringify(data)
+                }
+            ).then(function(response){
+
+            }).catch(function(err){console.log(err)});
+        }
+
+
+        function sendPrivateData(event,targetId, data) {
+            fetch('/data/'+target+'/' + event,
+                {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
                 }
             ).then(function(response){
 
@@ -35,57 +48,10 @@
         }
     </script>
 
-    <script>
-        const config = {
-            type: Phaser.AUTO,
-            width: 800,
-            height: 600,
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    gravity: { y: 200 }
-                }
-            },
-            scene: {
-                preload: preload,
-                create: create,
-            }
-        };
-
-        const game = new Phaser.Game(config);
-
-        function preload ()
-        {
-            this.load.setBaseURL('http://labs.phaser.io');
-            this.load.image('sky', 'assets/skies/space3.png');
-            this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-            this.load.image('red', 'assets/particles/red.png');
-        }
-
-        function create ()
-        {
-            window.scene = this;
-
-            window.scene.add.image(400, 300, 'sky');
-        }
-
-        function addPlayer() {
-            let particles = window.scene.add.particles('red');
-            let emitter = particles.createEmitter({
-                speed: 100,
-                scale: { start: 1, end: 0 },
-                blendMode: 'ADD'
-            });
-            let logo = window.scene.physics.add.image(400, 100, 'logo');
-
-            logo.setVelocity(100, 200);
-            logo.setBounce(1, 1);
-            logo.setCollideWorldBounds(true);
-
-            emitter.startFollow(logo);
-        }
-    </script>
 </head>
 <body>
+    <ul id="players">
+
+    </ul>
 </body>
 </html>

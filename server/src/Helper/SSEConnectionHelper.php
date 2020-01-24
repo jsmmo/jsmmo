@@ -92,8 +92,6 @@ class SSEConnectionHelper
             }
         }
 
-
-
         if (strlen($targetId)) {
             $connection = $this->getConnection($targetId);
             $connection->getStream()->write(array(
