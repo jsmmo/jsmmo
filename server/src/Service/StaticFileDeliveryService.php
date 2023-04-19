@@ -1,11 +1,11 @@
 <?php
 
-namespace APPNAME\Helper;
+namespace APPNAME\Service;
 
 /**
- * Class StaticFileDeliveryHelper
+ * Class StaticFileDeliveryService
  */
-class StaticFileDeliveryHelper
+class StaticFileDeliveryService
 {
     const CLIENT_DIR = __DIR__ . '/../../../client/';
 

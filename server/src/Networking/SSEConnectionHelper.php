@@ -1,6 +1,6 @@
 <?php
 
-namespace APPNAME\Helper;
+namespace APPNAME\Networking;
 
 /**
  * Class SSEConnectionHelper
@@ -70,7 +70,7 @@ class SSEConnectionHelper
      *
      * @return \React\Http\Response
      */
-    public function handleIncommingData($request)
+    public function handleIncommingData(\Psr\Http\Message\ServerRequestInterface $request)
     {
         $event = str_replace('/data/','',$request->getUri()->getPath());
         $tokens = explode('/',$event);
@@ -86,13 +86,15 @@ class SSEConnectionHelper
         // todo implement some event listener here...
         if ($event == 'keep-alive') {
             $data = \json_decode($data,true);
+            /** @var Connection $connection */
             $connection = $this->getConnection($data['uniqid']);
-            if ($connection) {
+            if ($connection instanceof Connection) {
                 $connection->setLastKeepAlive(time());
             }
         }
 
-        if (strlen($targetId)) {
+        if (isset($targetId) && strlen($targetId)) {
+            /** @var Connection $connection */
             $connection = $this->getConnection($targetId);
             $connection->getStream()->write(array(
                 'event' => $event,
@@ -141,7 +143,7 @@ class SSEConnectionHelper
             $cookies = array_merge($cookies,$this->parseCookies($cookieHeader));
         }
 
-        $this->connections[$cookies['uniqid']] = new \APPNAME\Connection($privateStream);
+        $this->connections[$cookies['uniqid']] = new \APPNAME\Networking\Connection($privateStream);
 
         $broadcastStream->pipe($privateStream);
 
@@ -194,12 +196,15 @@ class SSEConnectionHelper
         return $this->connections;
     }
 
-    public function getConnection($id) {
+    public function getConnection($id)
+    {
         if (isset($this->connections[$id])) {
             return $this->connections[$id];
         }
+
         return false;
     }
+
     public function removeConnection($id) {
         unset($this->connections[$id]);
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace APPNAME;
+namespace APPNAME\Networking;
 
 /**
  * Class Connection
@@ -50,5 +50,4 @@ class Connection
     {
         $this->lastKeepAlive = $lastKeepAlive;
     }
-
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace APPNAME\Helper;
+namespace APPNAME\Service;
 
 /**
- * Class ErrorPageHelper
+ * Class ErrorPageService
  */
-class ErrorPageHelper
+class ErrorPageService
 {
     /**
      * @return \React\Http\Response

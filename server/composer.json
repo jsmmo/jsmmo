@@ -1,7 +1,8 @@
 {
   "require": {
     "react/http": "^0.8.4",
-    "clue/buzz-react": "^2.5"
+    "clue/buzz-react": "^2.5",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {
